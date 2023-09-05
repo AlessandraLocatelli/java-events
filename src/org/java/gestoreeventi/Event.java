@@ -9,10 +9,13 @@ public class Event {
     private int totalCapacity;
     private int numberOfBookings;
 
+    private int remainingSeats;
+
     public Event(String nameOfTheEvent, LocalDate date, int totalCapacity) {
         this.nameOfTheEvent = nameOfTheEvent;
         this.date = checkValidityOfDate(date);
         this.totalCapacity = checkValidityOfCapacity(totalCapacity);
+        this.remainingSeats = totalCapacity;
         numberOfBookings = 0;
     }
 
@@ -41,37 +44,49 @@ public class Event {
         return numberOfBookings;
     }
 
+    public int getRemainingSeats()
+    {
 
-    public void book(int userBookingsToAdd) throws Exception
+        return remainingSeats;
+
+    }
+
+
+    public void book(int userBookingsToAdd) throws RuntimeException
     {
          if(LocalDate.now().isAfter(date) || numberOfBookings == totalCapacity)
          {
-             throw new Exception("An error has occurred. The Event is already over or total capacity has been reached.");
+             throw new RuntimeException("An error has occurred. The Event is already over or total capacity has been reached.");
 
          }
 
 
-        numberOfBookings++;
+        numberOfBookings = numberOfBookings+userBookingsToAdd;
 
     }
 
 
-    public void cancelReservation(int userBookingsToDelete) throws Exception
+    public void cancelReservation(int userBookingsToDelete) throws RuntimeException
     {
         if(LocalDate.now().isAfter(date) || numberOfBookings == 0)
         {
-            throw new Exception("An error has occurred. The Event is already over or couldn't find any previous bookings.");
+            throw new RuntimeException("An error has occurred. The Event is already over or couldn't find any previous bookings.");
 
         }
 
 
-        numberOfBookings--;
+        numberOfBookings = numberOfBookings - userBookingsToDelete;
 
 
 
     }
 
+    public void updateRemainingSeats()
+    {
 
+        remainingSeats = totalCapacity - numberOfBookings;
+
+    }
 
 
     private LocalDate checkValidityOfDate(LocalDate date) throws RuntimeException
@@ -103,8 +118,8 @@ public class Event {
     @Override
     public String toString() {
         return "Event{" +
-                "  name of the event='" + nameOfTheEvent + '\'' +
-                ", date=" + date +
+                " name of the event='" + nameOfTheEvent + '\'' +
+                " ,date=" + date +
                 '}';
     }
 }
