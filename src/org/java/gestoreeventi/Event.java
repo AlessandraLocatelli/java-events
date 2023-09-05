@@ -2,14 +2,17 @@ package org.java.gestoreeventi;
 
 import java.time.LocalDate;
 
+/*con remaining seats si intende indicare qualsiasi tipologia di posto rimanente, inclusi, ma non solo,
+i posti a sedere*/
+
 public class Event {
 
     private String nameOfTheEvent;
     private LocalDate date;
-    private int totalCapacity;
-    private int numberOfBookings;
+    private int totalCapacity; //totale posti disponibili
+    private int numberOfBookings; //numero prenotazioni
 
-    private int remainingSeats;
+    private int remainingSeats; //posti disponibili rimanenti
 
     public Event(String nameOfTheEvent, LocalDate date, int totalCapacity) {
         this.nameOfTheEvent = nameOfTheEvent;
@@ -44,19 +47,15 @@ public class Event {
         return numberOfBookings;
     }
 
-    public int getRemainingSeats()
-    {
-
-        return remainingSeats;
-
-    }
+    public int getRemainingSeats() {return remainingSeats;}
 
 
+    //metodo per aggiungere nuove prenotazioni
     public void book(int userBookingsToAdd) throws RuntimeException
     {
-         if(LocalDate.now().isAfter(date) || numberOfBookings == totalCapacity)
+         if(userBookingsToAdd < 0 || numberOfBookings == totalCapacity)
          {
-             throw new RuntimeException("An error has occurred. The Event is already over or total capacity has been reached.");
+             throw new RuntimeException("Opss... One between the following errors has just occurred: you either tried to add a negative number or total capacity has already been reached.");
 
          }
 
@@ -65,12 +64,13 @@ public class Event {
 
     }
 
-
+    //metodo per cancellare prenotazioni
     public void cancelReservation(int userBookingsToDelete) throws RuntimeException
     {
-        if(LocalDate.now().isAfter(date) || numberOfBookings == 0)
+        if( userBookingsToDelete < 0  || numberOfBookings == 0 || numberOfBookings < userBookingsToDelete)
         {
-            throw new RuntimeException("An error has occurred. The Event is already over or couldn't find any previous bookings.");
+            throw new RuntimeException("Opss... One between the following errors has just occurred: you tried to add a negative number, you didn't previously book any seats or you" +
+                    " indicated a number greater than the number of seats you previously booked. ");
 
         }
 
@@ -81,6 +81,7 @@ public class Event {
 
     }
 
+    //metodo per aggiornare posti rimanenti
     public void updateRemainingSeats()
     {
 
