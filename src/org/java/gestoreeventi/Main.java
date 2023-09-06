@@ -11,19 +11,32 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
+
         boolean exitEventsCreation = false;
         boolean exitBookingCancellingMenu = false;
+        String programmeTitleInput = null;
         String nameInput = null;
         LocalDate dateInput = null;
         LocalTime timeInput = null;
         BigDecimal priceInput = BigDecimal.ZERO;
         int totalCapacityInput = 0;
         int numberOfBookingsInput = 0;
+
+        EventsProgramme eventsProgramme = null;
         Concert concert = null;
 
+        while (eventsProgramme == null){
+        try{
         System.out.println("Name of the programme: ");
-        String programmeTitleInput = sc.nextLine();
-        EventsProgramme eventsProgramme = new EventsProgramme(programmeTitleInput);
+        programmeTitleInput = sc.nextLine();
+        eventsProgramme = new EventsProgramme(programmeTitleInput);
+        }
+        catch(InvalidEventParametersException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        }
+
 
         while(!exitEventsCreation) {
             System.out.println("DO YOU WANT TO CREATE A EVENT?(y/n)");
@@ -167,9 +180,23 @@ public class Main {
 
         if(seeOnlySomeEventsChoice.equalsIgnoreCase("y"))
         {
-            System.out.println("Insert the date: (yyyy-mm-dd) ");
-            LocalDate eventsDate = LocalDate.parse(sc.nextLine());
+            LocalDate eventsDate = null;
+
+            while(eventsDate == null){
+            try{
+            System.out.println("Insert date: (yyyy-mm-dd) ");
+            eventsDate = LocalDate.parse(sc.nextLine());
+            }
+            catch (DateTimeParseException e)
+            {
+                System.out.println("Invalid format for dates.");
+            }
+            }
+
             System.out.println(eventsProgramme.showMeEventsAtAGivenDate(eventsDate));
+
+
+
         }
 
         System.out.println("Do you want to clear your list? (y/n)");

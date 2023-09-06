@@ -4,15 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/*con remaining seats si intende indicare qualsiasi tipologia di posto rimanente, inclusi, ma non solo,
-i posti a sedere*/
 
 public class Event {
 
     private String nameOfTheEvent;
     private LocalDate date;
-    private int totalCapacity; //totale posti disponibili
-    private int numberOfBookings; //numero prenotazioni
+    private int totalCapacity;
+    private int numberOfBookings;
 
     public Event(String nameOfTheEvent, LocalDate date, int totalCapacity) throws InvalidEventParametersException {
 
@@ -87,7 +85,7 @@ public class Event {
     }
 
 
-    //metodo per aggiungere nuove prenotazioni
+
     public void book(int userBookingsToAdd) throws InvalidEventParametersException
     {
          if(getRemainingSeats() < userBookingsToAdd)
@@ -106,7 +104,7 @@ public class Event {
 
     }
 
-    //metodo per cancellare prenotazioni
+
     public void cancelReservation(int userBookingsToDelete) throws InvalidEventParametersException
     {
         if(numberOfBookings < userBookingsToDelete)

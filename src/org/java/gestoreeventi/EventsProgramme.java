@@ -9,11 +9,34 @@ public class EventsProgramme {
     String programmeTitle;
     List<Event> eventsList;
 
+
+
+    public EventsProgramme(String programmeTitle) throws InvalidEventParametersException {
+
+        if(Utilities.isEmptyString(programmeTitle))
+        {
+            throw new InvalidEventParametersException("Title cannot be null or empty.");
+        }
+
+        this.programmeTitle = programmeTitle;
+        eventsList = new ArrayList<>();
+
+
+    }
+
+
+
     public String getProgrammeTitle() {
         return programmeTitle;
     }
 
-    public void setProgrammeTitle(String programmeTitle) {
+    public void setProgrammeTitle(String programmeTitle) throws InvalidEventParametersException {
+
+        if(Utilities.isEmptyString(programmeTitle))
+        {
+            throw new InvalidEventParametersException("Title cannot be null or empty.");
+        }
+
         this.programmeTitle = programmeTitle;
     }
 
@@ -22,13 +45,6 @@ public class EventsProgramme {
     }
 
 
-    public EventsProgramme(String programmeTitle) {
-        this.programmeTitle = programmeTitle;
-        eventsList = new ArrayList<>();
-    }
-
-
-    //metodo aggiungi evento alla lista
     public void addEvent(Event event)
     {
         eventsList.add(event);
@@ -36,7 +52,7 @@ public class EventsProgramme {
     }
 
 
-    //metodo restituisci lista con tutti gli eventi presenti in una certa data
+
     public List<Event> showMeEventsAtAGivenDate(LocalDate date)
     {
         List<Event> eventsWithSameDateList = new ArrayList<>();
@@ -51,11 +67,15 @@ public class EventsProgramme {
 
         }
 
+        if(eventsWithSameDateList.isEmpty())
+        {
+            System.out.println("No events staring on: "+date);
+        }
+
         return eventsWithSameDateList;
     }
 
 
-    //metodo restituisci numero eventi presenti nel programma
     public int showMeNumberOfEvents()
     {
 
@@ -63,15 +83,12 @@ public class EventsProgramme {
     }
 
 
-    //metodo svuota lista degli eventi
     public void clearEventsList()
     {
 
         eventsList.clear();
     }
 
-
-    //metodo restituisci stringa mostrando titolo del programma e tutti gli eventi
     public String toString()
     {
 
