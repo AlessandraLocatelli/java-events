@@ -1,6 +1,8 @@
 package org.java.gestoreeventi;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
@@ -12,9 +14,11 @@ public class Main {
         boolean exit = false;
         String nameInput = null;
         LocalDate dateInput = null;
+        LocalTime timeInput = null;
+        BigDecimal priceInput = BigDecimal.ZERO;
         int totalCapacityInput = 0;
         int numberOfBookingsInput = 0;
-        Event event = null;
+        Concert concert = null;
 
         while(!exit) {
             System.out.println("DO YOU WANT TO CREATE AN EVENT?(y/n)");
@@ -30,18 +34,23 @@ public class Main {
                     nameInput = sc.nextLine();
                     System.out.println("Date: (yyyy-mm-dd)");
                     dateInput = LocalDate.parse(sc.nextLine());
+                    System.out.println("Time: (hh:mm:ss) ");
+                    timeInput = LocalTime.parse(sc.nextLine());
                     System.out.println("Total Capacity: ");
                     totalCapacityInput = Integer.parseInt(sc.nextLine());
-                    event = new Event(nameInput, dateInput, totalCapacityInput);
+                    System.out.println("Price: ");
+                    priceInput = new BigDecimal(sc.nextLine());
+                    concert = new Concert(nameInput, dateInput, totalCapacityInput,timeInput,priceInput);
                   }
                   catch (DateTimeParseException e)
                   {
-                      System.out.println("Correct format for dates: (yyyy-mm-dd)");
+                      System.out.println("Correct format for dates: (yyyy-mm-dd). " +
+                              "Correct format for time:(hh:mm:ss)");
 
                   }
                   catch (NumberFormatException e)
                   {
-                      System.out.println("Insert a number.");
+                      System.out.println("Incorrect format for numbers.");
 
                   }
                   catch (InvalidEventParametersException e)
@@ -55,10 +64,10 @@ public class Main {
                       System.out.println("A generic error has occurred.");
                   }
 
-                }while(event == null);
+                }while(concert == null);
 
-                System.out.println(event);
-                System.out.println("Total Capacity: " + event.getTotalCapacity());
+                System.out.println(concert);
+                System.out.println("Total Capacity: " + concert.getTotalCapacity());
 
                 while(!exit) {
 
@@ -74,7 +83,7 @@ public class Main {
                         try{
                         System.out.println("Add number of bookings: ");
                         numberOfBookingsInput = Integer.parseInt(sc.nextLine());
-                        event.book(numberOfBookingsInput);
+                        concert.book(numberOfBookingsInput);
                         }
                         catch (NumberFormatException e)
                         {
@@ -89,15 +98,15 @@ public class Main {
                         {
                             System.out.println("A generic error has occurred.");
                         }
-                        System.out.println("Total number of bookings: "+event.getNumberOfBookings());
-                        System.out.println("Remaining seats: "+event.getRemainingSeats());
+                        System.out.println("Total number of bookings: "+concert.getNumberOfBookings());
+                        System.out.println("Remaining seats: "+concert.getRemainingSeats());
                         break;
 
                     case "2":
                         try{
                         System.out.println("Add number of bookings you want to cancel: ");
                         numberOfBookingsInput = Integer.parseInt(sc.nextLine());
-                        event.cancelReservation(numberOfBookingsInput);
+                        concert.cancelReservation(numberOfBookingsInput);
                         }
                         catch (NumberFormatException e)
                         {
@@ -112,7 +121,7 @@ public class Main {
                             System.out.println("A generic error has occurred.");
                         }
 
-                        System.out.println("Remaining seats: "+event.getRemainingSeats());
+                        System.out.println("Remaining seats: "+concert.getRemainingSeats());
                         break;
 
                     case "3":
