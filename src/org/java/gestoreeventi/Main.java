@@ -11,7 +11,8 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        boolean exit = false;
+        boolean exitEventsCreation = false;
+        boolean exitBookingCancellingMenu = false;
         String nameInput = null;
         LocalDate dateInput = null;
         LocalTime timeInput = null;
@@ -20,8 +21,12 @@ public class Main {
         int numberOfBookingsInput = 0;
         Concert concert = null;
 
-        while(!exit) {
-            System.out.println("DO YOU WANT TO CREATE AN EVENT?(y/n)");
+        System.out.println("Name of the programme: ");
+        String programmeTitleInput = sc.nextLine();
+        EventsProgramme eventsProgramme = new EventsProgramme(programmeTitleInput);
+
+        while(!exitEventsCreation) {
+            System.out.println("DO YOU WANT TO CREATE A EVENT?(y/n)");
             String userChoice = sc.nextLine();
 
             if (userChoice.equalsIgnoreCase("y")) {
@@ -41,6 +46,8 @@ public class Main {
                     System.out.println("Price: ");
                     priceInput = new BigDecimal(sc.nextLine());
                     concert = new Concert(nameInput, dateInput, totalCapacityInput,timeInput,priceInput);
+                    eventsProgramme.addEvent(concert);
+
                   }
                   catch (DateTimeParseException e)
                   {
@@ -66,10 +73,11 @@ public class Main {
 
                 }while(concert == null);
 
+
                 System.out.println(concert);
                 System.out.println("Total Capacity: " + concert.getTotalCapacity());
 
-                while(!exit) {
+                while(!exitBookingCancellingMenu) {
 
                 System.out.println("WHAT WOULD YOU LIKE TO DO? ");
                 System.out.println("1.BOOK ONE OR MORE SEATS.");
@@ -125,7 +133,7 @@ public class Main {
                         break;
 
                     case "3":
-                        exit = true;
+                        exitBookingCancellingMenu = true;
                         break;
 
                     default:
@@ -139,7 +147,7 @@ public class Main {
             }
             else if(userChoice.equalsIgnoreCase("n"))
             {
-                exit = true;
+                exitEventsCreation = true;
 
             }
             else
@@ -150,6 +158,30 @@ public class Main {
             }
 
         }
+
+        System.out.println("Printing your newly created programme: "+eventsProgramme);
+        System.out.println("Number of events: "+eventsProgramme.showMeNumberOfEvents());
+
+        System.out.println("Do you want to see only the events at a given date? (y/n)");
+        String seeOnlySomeEventsChoice = sc.nextLine();
+
+        if(seeOnlySomeEventsChoice.equalsIgnoreCase("y"))
+        {
+            System.out.println("Insert the date: (yyyy-mm-dd) ");
+            LocalDate eventsDate = LocalDate.parse(sc.nextLine());
+            System.out.println(eventsProgramme.showMeEventsAtAGivenDate(eventsDate));
+        }
+
+        System.out.println("Do you want to clear your list? (y/n)");
+        String clearListChoice = sc.nextLine();
+
+        if(clearListChoice.equalsIgnoreCase("y"))
+        {
+            eventsProgramme.clearEventsList();
+            System.out.println("The event list has been successfully cleared! ");
+        }
+
+
 
         System.out.println("HOPE YOU ENJOYED OUR APP! BYE BYE!");
 
