@@ -24,7 +24,7 @@ public class Main {
                 System.out.println(" ");
                 System.out.println("----CREATING A NEW EVENT----");
 
-                while (event == null){
+                do{
                 try{
                     System.out.println("Name: ");
                     nameInput = sc.nextLine();
@@ -33,8 +33,6 @@ public class Main {
                     System.out.println("Total Capacity: ");
                     totalCapacityInput = Integer.parseInt(sc.nextLine());
                     event = new Event(nameInput, dateInput, totalCapacityInput);
-                    System.out.println(event);
-                    System.out.println("Total Capacity: " + event.getTotalCapacity());
                   }
                   catch (DateTimeParseException e)
                   {
@@ -46,13 +44,21 @@ public class Main {
                       System.out.println("Insert a number.");
 
                   }
-                  catch (RuntimeException e)
+                  catch (InvalidEventParametersException e)
                   {
-
+                      System.out.println("Unable to create the event.");
                       System.out.println(e.getMessage());
 
                   }
-                }
+                  catch(Error e)
+                  {
+                      System.out.println("A generic error has occurred.");
+                  }
+
+                }while(event == null);
+
+                System.out.println(event);
+                System.out.println("Total Capacity: " + event.getTotalCapacity());
 
                 while(!exit) {
 
@@ -69,19 +75,22 @@ public class Main {
                         System.out.println("Add number of bookings: ");
                         numberOfBookingsInput = Integer.parseInt(sc.nextLine());
                         event.book(numberOfBookingsInput);
-                        System.out.println("Total number of bookings: "+event.getNumberOfBookings());
-                        event.updateRemainingSeats();
-                        System.out.println("Remaining seats: "+event.getRemainingSeats());
                         }
                         catch (NumberFormatException e)
                         {
                             System.out.println("Insert a number.");
                         }
-                        catch (RuntimeException e)
+                        catch (InvalidEventParametersException e)
                         {
                             System.out.println(e.getMessage());
 
                         }
+                        catch(Error e)
+                        {
+                            System.out.println("A generic error has occurred.");
+                        }
+                        System.out.println("Total number of bookings: "+event.getNumberOfBookings());
+                        System.out.println("Remaining seats: "+event.getRemainingSeats());
                         break;
 
                     case "2":
@@ -89,19 +98,21 @@ public class Main {
                         System.out.println("Add number of bookings you want to cancel: ");
                         numberOfBookingsInput = Integer.parseInt(sc.nextLine());
                         event.cancelReservation(numberOfBookingsInput);
-                        event.updateRemainingSeats();
-                        System.out.println("Remaining seats: "+event.getRemainingSeats());
                         }
                         catch (NumberFormatException e)
                         {
                             System.out.println("Insert a number.");
                         }
-                        catch (RuntimeException e)
+                        catch (InvalidEventParametersException e)
                         {
                             System.out.println(e.getMessage());
-
+                        }
+                        catch(Error e)
+                        {
+                            System.out.println("A generic error has occurred.");
                         }
 
+                        System.out.println("Remaining seats: "+event.getRemainingSeats());
                         break;
 
                     case "3":

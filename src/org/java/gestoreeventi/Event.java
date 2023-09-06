@@ -1,6 +1,8 @@
 package org.java.gestoreeventi;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /*con remaining seats si intende indicare qualsiasi tipologia di posto rimanente, inclusi, ma non solo,
 i posti a sedere*/
@@ -12,14 +14,38 @@ public class Event {
     private int totalCapacity; //totale posti disponibili
     private int numberOfBookings; //numero prenotazioni
 
-    private int remainingSeats; //posti disponibili rimanenti
+    public Event(String nameOfTheEvent, LocalDate date, int totalCapacity) throws InvalidEventParametersException {
 
-    public Event(String nameOfTheEvent, LocalDate date, int totalCapacity) {
+        boolean invalid = Utilities.isDateInThePast(date) || Utilities.isNotPositiveNumber(totalCapacity) || Utilities.isEmptyString(nameOfTheEvent);
+
+        if(invalid)
+        {
+            List<String> messages = new ArrayList<>();
+
+            if(Utilities.isDateInThePast(date))
+            {
+                messages.add("the event cannot start in the past");
+            }
+
+            if(Utilities.isNotPositiveNumber(totalCapacity))
+            {
+                messages.add("total capacity can't be equal to or less than zero!");
+            }
+
+            if(Utilities.isEmptyString(nameOfTheEvent))
+            {
+                messages.add("name of the event cannot be empty or null.");
+            }
+
+            throw new InvalidEventParametersException(String.join("," ,messages));
+
+        }
+
+
         this.nameOfTheEvent = nameOfTheEvent;
-        this.date = checkValidityOfDate(date);
-        this.totalCapacity = checkValidityOfCapacity(totalCapacity);
-        this.remainingSeats = totalCapacity;
-        numberOfBookings = 0;
+        this.date = date;
+        this.totalCapacity = totalCapacity;
+        this.numberOfBookings = 0;
     }
 
 
@@ -27,7 +53,11 @@ public class Event {
         return nameOfTheEvent;
     }
 
-    public void setNameOfTheEvent(String nameOfTheEvent) {
+    public void setNameOfTheEvent(String nameOfTheEvent) throws InvalidEventParametersException {
+        if (Utilities.isEmptyString(nameOfTheEvent))
+        {
+            throw new InvalidEventParametersException("name can't be null or empty.");
+        }
         this.nameOfTheEvent = nameOfTheEvent;
     }
 
@@ -35,8 +65,12 @@ public class Event {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = checkValidityOfDate(date);
+    public void setDate(LocalDate date) throws InvalidEventParametersException {
+        if(Utilities.isDateInThePast(date))
+        {
+            throw new InvalidEventParametersException("the event cannot start in the past!");
+        }
+        this.date = date;
     }
 
     public int getTotalCapacity() {
@@ -47,72 +81,48 @@ public class Event {
         return numberOfBookings;
     }
 
-    public int getRemainingSeats() {return remainingSeats;}
+    public int getRemainingSeats() {
+
+        return totalCapacity-numberOfBookings;
+    }
 
 
     //metodo per aggiungere nuove prenotazioni
-    public void book(int userBookingsToAdd) throws RuntimeException
+    public void book(int userBookingsToAdd) throws InvalidEventParametersException
     {
-         if(userBookingsToAdd < 0 || numberOfBookings == totalCapacity)
+         if(getRemainingSeats() < userBookingsToAdd)
          {
-             throw new RuntimeException("Opss... One between the following errors has just occurred: you either tried to add a negative number or total capacity has already been reached.");
+             throw new InvalidEventParametersException( "not enough available seats.");
 
          }
 
+         if(Utilities.isDateInThePast(this.date))
+         {
+             throw new InvalidEventParametersException("the event is already over.");
 
-        numberOfBookings = numberOfBookings+userBookingsToAdd;
+         }
+
+         numberOfBookings += userBookingsToAdd;
 
     }
 
     //metodo per cancellare prenotazioni
-    public void cancelReservation(int userBookingsToDelete) throws RuntimeException
+    public void cancelReservation(int userBookingsToDelete) throws InvalidEventParametersException
     {
-        if( userBookingsToDelete < 0  || numberOfBookings == 0 || numberOfBookings < userBookingsToDelete)
+        if(numberOfBookings < userBookingsToDelete)
         {
-            throw new RuntimeException("Opss... One between the following errors has just occurred: you tried to add a negative number, you didn't previously book any seats or you" +
-                    " indicated a number greater than the number of seats you previously booked. ");
+            throw new InvalidEventParametersException("you indicated a number greater than the number of seats you previously booked. ");
+        }
+
+        if(Utilities.isDateInThePast(this.date))
+        {
+            throw new InvalidEventParametersException("the event is already over.");
 
         }
 
 
-        numberOfBookings = numberOfBookings - userBookingsToDelete;
+        numberOfBookings -=  userBookingsToDelete;
 
-
-
-    }
-
-    //metodo per aggiornare posti rimanenti
-    public void updateRemainingSeats()
-    {
-
-        remainingSeats = totalCapacity - numberOfBookings;
-
-    }
-
-
-    private LocalDate checkValidityOfDate(LocalDate date) throws RuntimeException
-    {
-        if(date.isBefore(LocalDate.now()))
-        {
-
-            throw new RuntimeException("The event cannot start in the past!");
-
-        }
-
-        return date;
-
-    }
-
-    private int checkValidityOfCapacity(int totalCapacity) throws IllegalArgumentException
-    {
-        if(totalCapacity <= 0)
-        {
-
-            throw  new IllegalArgumentException("Total capacity can't be equal to or less than zero!");
-
-        }
-
-          return totalCapacity;
     }
 
 
